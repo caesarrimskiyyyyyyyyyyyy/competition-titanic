@@ -1,0 +1,17 @@
+model:
+  _target_: sklearn.tree.DecisionTreeClassifier
+
+  # Критерий качества разбиения.
+  criterion: gini
+
+  # Пока не ограничиваем глубину дерева.
+  max_depth: null
+
+  # Минимальное числов объектов для разбиения узла.
+  min_samples_split: 2
+
+  # Минимальное число объектов в листе.
+  min_samples_leaf: 1
+
+  # Фиксируем случайность для воспроизводимости.
+  random_state: 42
