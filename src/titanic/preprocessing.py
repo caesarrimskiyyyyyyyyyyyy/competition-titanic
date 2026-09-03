@@ -45,3 +45,19 @@ def build_preprocessor():
             make_column_selector(dtype_exclude='number')
         )
     )
+
+
+def prepare_catboost_data(data):
+    """
+    Подготавливает категориальные признаки для CatBoost.
+
+    Числовые пропуски CatBoost обрабатывает самостоятельно.
+    Пропуски в категориальных признаках должны быть
+    представлены отдельным строковым значением.
+    """
+
+    # В Embarked есть два пропуска. Представляем
+    # их отдельной категорией Unknown.
+    return data.assign(
+        Embarked=data.Embarked.fillna('Unknown')
+    )

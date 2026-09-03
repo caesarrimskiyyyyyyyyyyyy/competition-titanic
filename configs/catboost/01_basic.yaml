@@ -1,0 +1,31 @@
+model:
+  # Класс модели, который создаст Hydra.
+  _target_: catboost.CatBoostClassifier
+
+  # Функция потерь для бинарной классификации.
+  loss_function: Logloss
+
+  # Отключаем служебный вывод процесса обучения.
+  verbose: false
+
+  # Не создаём директорию catboost_info.
+  allow_writing_files: false
+
+  # Обучаем на CPU.
+  task_type: CPU
+
+  # Кросс-валидация распараллеливается снаружи.
+  thread_count: 1
+
+  # Фиксируем случайность.
+  random_seed: 42
+
+fit:
+  # Эти признаки передаются в CatBoost.fit().
+  cat_features:
+    - Pclass
+    - Sex
+    - Embarked
+    - Title
+    - FamilyGroup
+    - Deck

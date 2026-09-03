@@ -1,0 +1,57 @@
+model:
+  _target_: catboost.CatBoostClassifier
+
+  # Функция потерь для бинарной классификации.
+  loss_function: Logloss
+
+  # Лучшие параметры по результатам GridSearchCV.
+  iterations: 400
+  learning_rate: 0.03
+  depth: 3
+  l2_leaf_reg: 0.5
+
+  # Отключаем служебный вывод процесса обучения.
+  verbose: false
+
+  # Не создаём директорию catboost_info.
+  allow_writing_files: false
+
+  # Обучаем модель на CPU.
+  task_type: CPU
+
+  # Параллелизм выполняет GridSearchCV.
+  thread_count: 1
+
+  # Фиксируем случайность.
+  random_seed: 42
+
+fit:
+  # Категории передаются непосредственно в CatBoost.fit().
+  cat_features:
+    - Pclass
+    - Sex
+    - Embarked
+    - Title
+    - FamilyGroup
+    - Deck
+
+# Сетка, использованная для подбора параметров.
+search:
+  iterations:
+    - 200
+    - 300
+    - 400
+
+  learning_rate:
+    - 0.03
+    - 0.05
+
+  depth:
+    - 3
+    - 4
+    - 5
+
+  l2_leaf_reg:
+    - 0.1
+    - 0.5
+    - 1.0

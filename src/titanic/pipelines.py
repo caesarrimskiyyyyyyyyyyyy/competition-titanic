@@ -2,7 +2,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import FunctionTransformer
 
 from titanic.features import make_features
-from titanic.preprocessing import build_preprocessor
+from titanic.preprocessing import build_preprocessor, prepare_catboost_data
 
 
 def build_pipeline(model):
@@ -15,7 +15,7 @@ def build_pipeline(model):
     3. переданная модель.
     """
 
-    # Возвращаем sklearn пайплайн
+    # Возвращаем sklearn пайплайн.
     return make_pipeline(
 
         # Оборачиваем feature engineering 
@@ -34,5 +34,43 @@ def build_pipeline(model):
 
         # Обучаем переданную модель
         # на подготовленных признаках.
+        model
+    )
+
+
+def build_catboost_pipeline(model):
+    """
+    Собирает полный pipeline для CatBoost.
+
+    CatBoost получает категориальные признаки напрямую,
+    поэтому OneHotEncoder и StandardScaler не используются.
+
+    Порядок выполнения:
+    1. создание новых признаков;
+    2. подготовка категорий для CatBoost;
+    3. обучение CatBoost.
+    """
+
+    return make_pipeline(
+        # Используем то же feature engineering,
+        # что и для остальных моделей.
+        FunctionTransformer(
+            func=make_features,
+
+            # Сохраняем DataFrame и названия колонок.
+            validate=False
+        ),
+
+        # Заполняем пропуски в категориальных признаках.
+        FunctionTransformer(
+            func=prepare_catboost_data,
+
+            # CatBoost должен получить pandas DataFrame,
+            # чтобы находить категории по именам колонок.
+            validate=False
+        ),
+
+        # CatBoost самостоятельно обрабатывает
+        # числовые и категориальные признаки.
         model
     )
