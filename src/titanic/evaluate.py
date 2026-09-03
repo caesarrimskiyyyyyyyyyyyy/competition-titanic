@@ -1,4 +1,23 @@
-from sklearn.model_selection import StratifiedKFold, cross_val_score
+from sklearn.model_selection import StratifiedKFold, cross_val_score, GridSearchCV
+
+
+# Единая метрика для сравнения экспериментов.
+_SCORING = 'accuracy'
+
+
+# Единая схема кросс-валидации для всех моделей
+# и всех экспериментов с гиперпараметрами.
+#
+# StratifiedKFold сохраняет приблизительно одинаковое
+# соотношение классов на каждом фолде.
+_CROSS_VALIDATION = StratifiedKFold(
+    n_splits=5,
+    shuffle=True,
+
+    # Фиксируем конкретное разбиение, чтобы
+    # результаты разных экспериментов можно было сравнивать.
+    random_state=42
+)
 
 
 def evaluate(pipeline, X, y):
@@ -9,34 +28,82 @@ def evaluate(pipeline, X, y):
     пропусков, масштабирование, OneHotEncoder, модель.
     """
 
-    # StratifiedKFold сохраняет приблизительно одинаковое
-    # соотношение классов на каждом фолде.
-    cv = StratifiedKFold(
-        n_splits=5,
-        shuffle=True,
-
-        # Фиксируем конкретное разбиение, чтобы
-        # результаты экспериментов можно было сравнить.
-        random_state=42
-    )
-
-    # Получаем accuracy отдельно на каждом validation фолде.
+    # Запускаем кросс-валидацию и получаем
+    # accuracy отдельно на каждом validation-фолде.
     scores = cross_val_score(
+
+        # Полный pipeline: признаки, preprocessing и модель.
         estimator=pipeline,
+
+        # Исходные признаки.
         X=X,
+
+        # Целевая переменная.
         y=y,
-        cv=cv,
-        scoring='accuracy'
+
+        # Одинаковые фолды для всех экспериментов.
+        cv=_CROSS_VALIDATION,
+
+        # Метрика, по которой выбирается лучший вариант.
+        scoring=_SCORING,
+
+        # Запускаем вычисления параллельно на всех ядрах.
+        n_jobs=-1
     )
 
-    # Подготавливаем вывод результатов.
+    # Объединяем результаты фолдов в одну строку
+    # для компактного вывода.
     formatted_scores = ', '.join(
         f'{score:.3f}'
         for score in scores
     )
 
+    # Выводим результаты отдельных фолдов,
+    # среднее качество и его разброс.
     print(f'Accuracy по фолдам: {formatted_scores}')
     print(f'Средняя accuracy: {scores.mean():.3f}')
     print(f'Std accuracy: {scores.std():.3f}')
 
+    # Возвращаем исходные результаты, чтобы их можно было
+    # использовать в таблицах и следующих экспериментах.
     return scores
+
+
+def run_grid_search(pipeline, param_grid, X, y):
+    """
+    Подбирает гиперпараметры полного pipeline.
+
+    Все варианты проверяются на той же схеме
+    кросс-валидации и по той же метрике, что и модели.
+    """
+
+    # Создаем поиск по переданной сетке гиперпараметров.
+    search = GridSearchCV(
+
+        # Полный pipeline: признаки, процессинг и модель.
+        estimator=pipeline,
+
+        # Набор гиперпараметров и значений для перебора.
+        param_grid=param_grid,
+
+        # Метрика, по которой выбирается лучший вариант.
+        scoring=_SCORING,
+
+        # Одинаковые фолды для всех экспериментов.
+        cv=_CROSS_VALIDATION,
+
+        # Запускаем вычисления параллельно на всех ядрах.
+        n_jobs=-1,
+
+        # Сохраняем качество на train фолдах,
+        # чтобы отслеживать возможное переобучение.
+        return_train_score=True
+    )
+
+    # Перебираем параметры и обучаем лучший найденный pipeline
+    # на всей переданной обучающей выборке.
+    search.fit(X, y)
+
+    # Возвращаем сам объект поиска: в нем доступны
+    # результаты, лучшие параметры и лучший pipeline.
+    return search

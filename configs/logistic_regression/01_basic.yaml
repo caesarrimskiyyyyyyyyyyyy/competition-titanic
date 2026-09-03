@@ -1,0 +1,8 @@
+model:
+  _target_: sklearn.linear_model.LogisticRegression
+
+  # Используем стандартный solver для L2-регуляризации.
+  solver: lbfgs
+
+  # Максимальное число итераций для сходимости solver.
+  max_iter: 300
