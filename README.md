@@ -12,5 +12,6 @@
 | 2.3 | SVC | Исходные признаки + `Title`, `FamilyGroup`, `Deck`, `IsChild`, `AgeMissing` | `kernel=rbf`, `C=10`, `gamma=0.003` | **0.835** | 0.009 | **+0.040** |
 | 3.1 | Decision Tree | Исходные + `Title`, `FamilyGroup`, `Deck`, `IsChild`, `AgeMissing` | Базовые параметры | 0.790 | 0.031 | -0.005 |
 | 4.1 | Random Forest | Исходные + `Title`, `FamilyGroup`, `Deck`, `IsChild`, `AgeMissing` | `n_estimators=500` | 0.815 | 0.015 | +0.020 |
+| 4.2 | Random Forest | Исходные признаки + `Title`, `FamilyGroup`, `Deck`, `IsChild`, `AgeMissing` | `n_estimators=500`, `max_depth=8`, `min_samples_leaf=1`, `max_features=None` | **0.845** | 0.020 | **+0.050** |
 
 Подбор регуляризации не увеличил среднюю accuracy Logistic Regression, но снизил разброс между фолдами с `0.015` до `0.008`. Поэтому для дальнейшего сравнения фиксируем `C=0.1`.
