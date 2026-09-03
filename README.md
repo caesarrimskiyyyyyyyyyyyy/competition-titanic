@@ -8,6 +8,8 @@
 | 1.1 | Logistic Regression | Исходные + `Title`, `FamilyGroup`, `Deck`, `IsChild`, `AgeMissing` | `C=1.0` | 0.832 | 0.015 | +0.037 |
 | 1.2 | Logistic Regression | Исходные + `Title`, `FamilyGroup`, `Deck`, `IsChild`, `AgeMissing` | `C=0.1` | **0.832** | **0.008** | **+0.037** |
 | 2.1 | SVC | Исходные + `Title`, `FamilyGroup`, `Deck`, `IsChild`, `AgeMissing` | RBF, базовые параметры | 0.829 | 0.017 | +0.034 |
+| 2.2 | SVC | Исходные признаки + `Title`, `FamilyGroup`, `Deck`, `IsChild`, `AgeMissing` | `kernel=rbf`, `C=10`, `gamma=0.01` | **0.835** | 0.009 | **+0.040** |
+| 2.3 | SVC | Исходные признаки + `Title`, `FamilyGroup`, `Deck`, `IsChild`, `AgeMissing` | `kernel=rbf`, `C=10`, `gamma=0.003` | **0.835** | 0.009 | **+0.040** |
 | 3.1 | Decision Tree | Исходные + `Title`, `FamilyGroup`, `Deck`, `IsChild`, `AgeMissing` | Базовые параметры | 0.790 | 0.031 | -0.005 |
 | 4.1 | Random Forest | Исходные + `Title`, `FamilyGroup`, `Deck`, `IsChild`, `AgeMissing` | `n_estimators=500` | 0.815 | 0.015 | +0.020 |
 
