@@ -4,11 +4,11 @@ model:
   # Функция потерь для бинарной классификации.
   loss_function: Logloss
 
-  # Лучшие параметры по результатам GridSearchCV.
-  iterations: 400
-  learning_rate: 0.03
-  depth: 3
-  l2_leaf_reg: 0.5
+  # Лучшие параметры предыдущей итерации.
+  iterations: 300
+  learning_rate: 0.05
+  depth: 4
+  l2_leaf_reg: 1.0
 
   # Отключаем служебный вывод процесса обучения.
   verbose: false
