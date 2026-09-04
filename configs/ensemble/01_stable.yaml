@@ -1,0 +1,9 @@
+model:
+  _target_: sklearn.ensemble.VotingClassifier
+
+  # Преобразуем контейнеры Hydra в обычные
+  # Python list и dict перед созданием модели.
+  _convert_: all
+
+  voting: hard
+  n_jobs: 1
