@@ -20,7 +20,7 @@ _CROSS_VALIDATION = StratifiedKFold(
 )
 
 
-def evaluate(pipeline, X, y, fit_params=None):
+def evaluate(pipeline, X, y, fit_params=None, n_jobs=-1):
     """
     Оценивает полный pipeline с помощью кросс-валидации.
 
@@ -47,8 +47,9 @@ def evaluate(pipeline, X, y, fit_params=None):
         # Единая метрика качества.
         scoring=_SCORING,
 
-        # Запускаем фолды параллельно.
-        n_jobs=-1,
+        # Для обычных моделей используем все ядра,
+        # а для PyTorch передадим n_jobs=1.
+        n_jobs=n_jobs,
 
         # Дополнительные параметры для pipeline.fit().
         # Для обычных моделей здесь остаётся None.
@@ -69,7 +70,7 @@ def evaluate(pipeline, X, y, fit_params=None):
     return scores
 
 
-def run_grid_search(pipeline, param_grid, X, y, fit_params=None):
+def run_grid_search(pipeline, param_grid, X, y, fit_params=None, n_jobs=-1):
     """
     Подбирает гиперпараметры полного pipeline.
     """
@@ -89,8 +90,8 @@ def run_grid_search(pipeline, param_grid, X, y, fit_params=None):
         # Одинаковые фолды для всех экспериментов.
         cv=_CROSS_VALIDATION,
 
-        # Запускаем фолды параллельно.
-        n_jobs=-1,
+        # Параллелизм выбирается при запуске эксперимента.
+        n_jobs=n_jobs,
 
         # Сохраняем train score для анализа переобучения.
         return_train_score=True,

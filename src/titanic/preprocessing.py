@@ -1,10 +1,12 @@
+import numpy as np
+
 from sklearn.compose import make_column_selector, make_column_transformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 
-def build_preprocessor():
+def build_preprocessor(sparse_output=True):
     """
     Создает preprocessing для числовых
     и категориальных признаков.
@@ -27,7 +29,7 @@ def build_preprocessor():
         SimpleImputer(strategy='most_frequent'),
 
         # Преобразует категории в бинарные столбцы.
-        OneHotEncoder(handle_unknown='ignore')
+        OneHotEncoder(handle_unknown='ignore', sparse_output=sparse_output)
     )
 
     return make_column_transformer(
@@ -60,4 +62,18 @@ def prepare_catboost_data(data):
     # их отдельной категорией Unknown.
     return data.assign(
         Embarked=data.Embarked.fillna('Unknown')
+    )
+
+
+def prepare_neural_data(data):
+    """
+    Преобразует результат препроцессинга в формат PyTorch.
+
+    Нейросеть получает плотную матрицу float32 вместо
+    стандартного для sklearn массива float64.
+    """
+
+    return data.astype(
+        np.float32,
+        copy=False
     )

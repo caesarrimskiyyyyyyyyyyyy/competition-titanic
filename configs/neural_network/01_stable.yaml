@@ -1,0 +1,56 @@
+model:
+  _target_: skorch.NeuralNetClassifier
+
+  # Hydra передаёт skorch класс нашей сети,
+  # а сам объект создаётся перед обучением.
+  module:
+    _target_: titanic.neural_network.TitanicFCNN
+    _partial_: true
+
+  # Параметры архитектуры TitanicFCNN.
+  module__hidden_size: 32
+  module__dropout: 0.2
+
+  # CrossEntropyLoss принимает два logits
+  # и целочисленный класс 0 или 1.
+  criterion:
+    _target_: torch.nn.CrossEntropyLoss
+    _partial_: true
+
+  # Adam используется как стартовый оптимизатор.
+  optimizer:
+    _target_: torch.optim.Adam
+    _partial_: true
+
+  # L2-регуляризация весов сети.
+  optimizer__weight_decay: 0.0001
+
+  # Скорость обучения.
+  lr: 0.001
+
+  # Один проход по обучающей части фолда — одна эпоха.
+  max_epochs: 100
+
+  # Количество пассажиров в одном батче.
+  batch_size: 32
+
+  # Перемешиваем наблюдения перед каждой эпохой.
+  iterator_train__shuffle: true
+
+  # Внешняя CV уже создаёт validation-фолд.
+  # Дополнительное разбиение внутри skorch не требуется.
+  train_split: null
+
+  # Отключаем вывод каждой эпохи.
+  verbose: 0
+
+  # Для такого маленького датасета CPU быстрее и проще.
+  device: cpu
+
+runtime:
+  # Фиксируем инициализацию весов и перемешивание батчей.
+  random_seed: 42
+
+  # Фолды обучаем последовательно:
+  # параллельный запуск нескольких PyTorch-моделей здесь не нужен.
+  n_jobs: 1

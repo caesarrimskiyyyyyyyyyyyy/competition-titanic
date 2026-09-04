@@ -15,3 +15,4 @@
 | 4.2 | Random Forest | Исходные признаки + `Title`, `FamilyGroup`, `Deck`, `IsChild`, `AgeMissing` | `n_estimators=500`, `max_depth=8`, `min_samples_leaf=1`, `max_features=None` | **0.845** | **0.020** | **+0.050** |
 | 5.1 | CatBoost | Исходные признаки + `Title`, `FamilyGroup`, `Deck`, `IsChild`, `AgeMissing`; категории обработаны нативно | Параметры модели по умолчанию | 0.835 | 0.022 | +0.040 |
 | 5.2 | CatBoost | Исходные признаки + `Title`, `FamilyGroup`, `Deck`, `IsChild`, `AgeMissing`; категории обработаны нативно | `iterations=400`, `learning_rate=0.03`, `depth=3`, `l2_leaf_reg=0.5` | **0.842** | **0.011** | **+0.047** |
+| 6.1 | FCNN | Исходные признаки + `Title`, `FamilyGroup`, `Deck`, `IsChild`, `AgeMissing`; категории обработаны через `OneHotEncoder` | `hidden_size=32`, `dropout=0.2`, `Adam`, `lr=0.001`, `weight_decay=0.0001`, `epochs=100` | 0.827 | 0.027 | +0.032 |

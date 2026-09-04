@@ -2,7 +2,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import FunctionTransformer
 
 from titanic.features import make_features
-from titanic.preprocessing import build_preprocessor, prepare_catboost_data
+from titanic.preprocessing import build_preprocessor, prepare_catboost_data, prepare_neural_data
 
 
 def build_pipeline(model):
@@ -72,5 +72,23 @@ def build_catboost_pipeline(model):
 
         # CatBoost самостоятельно обрабатывает
         # числовые и категориальные признаки.
+        model
+    )
+
+def build_neural_pipeline(model):
+    """
+    Собирает полный pipeline для нейронной сети.
+    """
+
+    return make_pipeline(
+        FunctionTransformer(make_features),
+
+        # PyTorch не работает с разреженной матрицей,
+        # поэтому OneHotEncoder возвращает dense-результат.
+        build_preprocessor(sparse_output=False),
+
+        # PyTorch ожидает float32.
+        FunctionTransformer(prepare_neural_data),
+
         model
     )
